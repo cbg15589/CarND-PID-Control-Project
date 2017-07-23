@@ -1,5 +1,49 @@
 # CarND-Controls-PID
 Self-Driving Car Engineer Nanodegree Program
+---
+## Introduction
+
+After learning the basics of PID controllers in the lessons, in this project, we must build a C++ implementation of the PID controller.
+The controller must then interact with the simulator via a websocket. The simulator provides current cross-track error, steering angle and speed, based on this inputs we must provide commands to both the steering and throttle.
+
+## Reflection
+
+- *Describe the effect each of the P, I, D components had in your implementation.*
+
+The P (Proportional) component makes the car to steer to the lane center proportionally to the cross-track error. In absensce of the other components, the car will oscillate over the lane center. The bigger the P component the bigger amplitude and shorter period of the oscillations.
+
+The D (Differential) component steers the car based on the change of the cross-track error. This effectively damps the oscillations created by the P component.
+
+The I (Integral) component steers the car based on the acumulated cross-track error. This counteracts the bias on the steering created by the vehicle itself or the curves on the track. For example, if we were driving on a constant radio circle, the output from the P component would be always 0 at the center of the lane, making the vehicle to drift apart from the center. Tuning the P and D components we could make the vehicle to follow the circle, but wit a bigger radio. The I component is capable to counter this bias over time making the vehicle follow the center of the lane.
+In this particular project, as I believe the vehicle doesn't have any bias on the steering, the I component helps us mainly on the curves, giving us the abilty to follow tehm closer to the lane center.
+
+
+- *Describe how the final hyperparameters were chosen.*
+
+First I manually tuned the hyperparamaters until I could make continious laps around the track. Then I added the throttle controller and re-tuned both controllers to make faster laps. Later, I was planning to automate the parameter optimization using twiddle as in the lessons but then I discarded the idea. The reason behind, is that when manually tuning, I couldn't get the setting that would work great on both curves and straights and I didn't thought that Twiddle could give me the answer. Additionally, I think that evaluating the controller based only on the acumulated error is a good idea. As a passenger I would prefer a smoother drive with more error than a controller that react too agresively.
+
+Below you can find a some videos of the different values I tried
+
+Better on straights (Kp = 0.06 Kd=3):
+[Curve](https://www.youtube.com/watch?v=uBq4mfa7BrY)
+[Straight](https://www.youtube.com/watch?v=x0gSxKwrPLQ)
+
+Better on curves (Kp = 0.3 Kd=6):
+[Curve](https://www.youtube.com/watch?v=ozFIv030Hjw)
+[Straight](https://www.youtube.com/watch?v=UymN3d3U5fc)
+
+The less agressive settings have problems following the curves without leaving the track, and the more agressive settings oscillate too much on the straights. I then thought about how could I combine both settings, an easy way I found is to update Kp and Kd based on the current angle. This way we will steer more aggresively on curves while maintaninng a smooth driving on straights. 
+
+the formulas I used are:
+
+Kp = 0.06 + fabs(angle)*(0.3-0.06)/25
+Kd = 3 + fabs(angle)*(6 - 3) / 25
+
+Below you can fid an example of a full lap with the combined settings:
+[Full Lap](https://www.youtube.com/watch?v=HyE_bX5rQjc)
+
+
+
 
 ---
 
