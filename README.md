@@ -25,11 +25,15 @@ First I manually tuned the hyperparamaters until I could make continuous laps ar
 Below you can find some videos of the different values I tried
 
 Better on straights (Kp = 0.06 Kd=3):
+
 [Curve](https://www.youtube.com/watch?v=uBq4mfa7BrY)
+
 [Straight](https://www.youtube.com/watch?v=x0gSxKwrPLQ)
 
 Better on curves (Kp = 0.3 Kd=6):
+
 [Curve](https://www.youtube.com/watch?v=ozFIv030Hjw)
+
 [Straight](https://www.youtube.com/watch?v=UymN3d3U5fc)
 
 The less aggressive settings have problems following the curves without leaving the track, and the more aggressive settings oscillate too much on the straights. I then thought about how could I combine both settings, an easy way I found is to update Kp and Kd based on the current angle. This way we will steer more aggressively on curves while maintaining a smooth driving on straights. 
@@ -37,9 +41,11 @@ The less aggressive settings have problems following the curves without leaving 
 the formulas I used are:
 
 Kp = 0.06 + fabs(angle)*(0.3-0.06)/25
+
 Kd = 3 + fabs(angle)*(6 - 3) / 25
 
 Example of a full lap with the combined settings:
+
 [Full Lap](https://www.youtube.com/watch?v=HyE_bX5rQjc)
 
 
